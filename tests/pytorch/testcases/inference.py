@@ -23,7 +23,8 @@ parser.add_argument("--tokenizer", default=None, type=str)
 parser.add_argument("--input", default=None, type=str)
 parser.add_argument("--tensor_parallel_size", default=1, type=int)
 args = parser.parse_args()
-generation_task = args.task in ["causal-lm", "seq2seq-lm"]
+# generation_task = args.task in ["causal-lm", "seq2seq-lm"]
+generation_task = True
 args.tokenizer = args.tokenizer if args.tokenizer else args.model
 
 # 1. Create a tokenizer

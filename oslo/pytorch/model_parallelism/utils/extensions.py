@@ -6,10 +6,8 @@ from typing import Optional, Union
 import torch
 import torch.distributed as dist
 
-from oslo.pytorch.model_parallelism.model_parallel_engine import (
-    ModelDeparallelEngine,
-    ModelParallelEngine,
-)
+from oslo.pytorch.model_parallelism import model_parallel_engine
+
 from oslo.pytorch.utils.huggingface import is_huggingface_model
 
 PARALLELIZED_WEIGHTS_NAME = "pytorch_model_tp_0_pp_0.bin"
@@ -130,7 +128,7 @@ def save_parallelized(
 
     if merge_checkpoints:
         model_to_save = self.__class__(self.config).eval()
-        mp_engine = ModelParallelEngine(model_to_save, self.mpu, tp_mapping)
+        mp_engine = model_parallel_engine.ModelParallelEngine(model_to_save, self.mpu, tp_mapping)
         mp_engine.parallelize()
 
         if state_dict is None:
@@ -142,7 +140,7 @@ def save_parallelized(
             self.mpu.get_tensor_parallel_world_size() > 1
             or self.mpu.get_pipeline_parallel_rank() > 1
         ):
-            mdp_enigne = ModelDeparallelEngine(
+            mdp_enigne = model_parallel_engine.ModelDeparallelEngine(
                 model_to_save, model_to_save.mpu, tp_mapping
             )
             mdp_enigne.deparallelize()
